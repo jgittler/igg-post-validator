@@ -4,6 +4,7 @@ require "httparty"
 require "csv"
 require "action_mailer"
 require "pry"
+require_relative "./share_validator.rb"
 
 require_relative "../initializers/env.rb"
 
@@ -40,3 +41,5 @@ ActionMailer::Base.smtp_settings = {
   :enable_starttls_auto => true
 }
 ActionMailer::Base.view_paths = APP_ROOT
+
+ShareValidator.new(ARGV[0]).validate_shares

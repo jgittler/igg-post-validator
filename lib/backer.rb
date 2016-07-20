@@ -123,7 +123,7 @@ class Backer < ActiveRecord::Base
     end
 
     def free_pair?
-      backer["Choose 1 of the following perks."] == "Free Pair"
+      backer["Do yo want us to send you free pair(s) now or save your warranty for a later date?"] == "Now"
     end
 
     def pair_count

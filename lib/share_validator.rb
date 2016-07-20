@@ -1,4 +1,6 @@
 require_relative "./mailer.rb"
+require_relative "./csv_parser.rb"
+require_relative "./backer.rb"
 
 class ShareValidator
   URL_KEY = "Submit the url of your publicly shared post."
@@ -22,8 +24,9 @@ class ShareValidator
     if request.success?
       b = Backer.insert(backer: backer, request: request, success: true)
 
-      if b.successful? && production?
-        ::Mailer.successful_post_validation(b.email, b.perk, b.pretty_pairs).deliver_now
+      if b.successful? #&& production?
+        ::Mailer.successful_post_validation("jason.gittler@gmail.com", b.perk, b.pretty_pairs).deliver_now
+        # ::Mailer.successful_post_validation(b.email, b.perk, b.pretty_pairs).deliver_now
       end
     else
       Backer.insert(backer: backer, request: request, success: false)
@@ -32,13 +35,13 @@ class ShareValidator
 
   class Request
     CAMPAIGN_TITLES = [
-      "Fello Eyewear: Earn a second pair for free.",
-      "Fello Eyewear: The Glasses that keep on Giving."
+      "Earn a second pair for free.",
+      "The Glasses that keep on Giving."
     ]
 
     class << self
       def [](uri)
-        new(HTTParty.get(url(uri))).parse
+        new(HTTParty.get(url(uri.downcase))).parse
       end
 
       def url(uri)
